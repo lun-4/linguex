@@ -8,8 +8,10 @@ defmodule Linguex.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Linguex.Worker.start_link(arg)
-      # {Linguex.Worker, arg}
+      Nosedrum.TextCommand.Storage.ETS,
+      Linguex.Discord.ReadyState,
+
+      Linguex.Discord.Consumer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
