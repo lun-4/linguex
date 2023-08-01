@@ -13,8 +13,6 @@ defmodule Linguex.Discord.Consumer do
 
     unless msg.author.id == self_id do
       # if the message starts with an user id mention, then it's time to talk to the  llm
-      IO.inspect(msg)
-
       if for_assistant(msg, self_id) do
         handle_assistant(msg)
       else
@@ -36,7 +34,7 @@ defmodule Linguex.Discord.Consumer do
   end
 
   defp handle_assistant(msg) do
-    reply = Linguex.Pipeline.submit(msg.content, author: msg.author.username)
+    reply = Linguex.DefaultPipeline.submit(msg.content)
     Api.create_message!(msg.channel_id, reply)
   end
 

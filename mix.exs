@@ -7,6 +7,7 @@ defmodule Linguex.MixProject do
       version: "0.1.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -24,6 +25,12 @@ defmodule Linguex.MixProject do
     [
       {:nostrum, "~> 0.8"},
       {:nosedrum, "~> 0.6"}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 end
