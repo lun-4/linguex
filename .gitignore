@@ -26,3 +26,5 @@ linguex-*.tar
 /tmp/
 
 .envrc
+
+config/*.secret.exs
