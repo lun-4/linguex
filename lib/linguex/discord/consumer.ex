@@ -13,10 +13,17 @@ defmodule Linguex.Discord.Consumer do
 
     unless msg.author.id == self_id do
       # if the message starts with an user id mention, then it's time to talk to the  llm
-      if for_assistant(msg, self_id) do
-        handle_assistant(msg, self_id)
-      else
-        handle_non_assistant(msg)
+      try do
+        if for_assistant(msg, self_id) do
+          handle_assistant(msg, self_id)
+        else
+          handle_non_assistant(msg)
+        end
+      rescue
+        e ->
+          Logger.error(Exception.format(:error, e, __STACKTRACE__))
+          Api.create_message!(msg.channel_id, "error happened: #{inspect(e)}")
+          reraise e, __STACKTRACE__
       end
     end
   end
@@ -41,15 +48,8 @@ defmodule Linguex.Discord.Consumer do
       |> String.replace("<@!#{self_id}>", "")
 
     # TODO strip mentions from message
-    try do
-      reply = Linguex.DefaultPipeline.submit(input_prompt)
-      Api.create_message!(msg.channel_id, "#{inspect(reply)}")
-    rescue
-      e ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
-        Api.create_message!(msg.channel_id, "error happened: #{inspect(e)}")
-        reraise e, __STACKTRACE__
-    end
+    reply = Linguex.DefaultPipeline.submit(input_prompt)
+    Api.create_message!(msg.channel_id, "#{inspect(reply)}")
   end
 
   defp handle_non_assistant(msg) do
