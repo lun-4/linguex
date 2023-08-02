@@ -80,7 +80,7 @@ defmodule Linguex.Lug.Character do
 
   defp _maybe(text) do
     unless text == nil do
-      " #{text}"
+      "\n#{text}"
     else
       ""
     end
