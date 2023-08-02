@@ -13,8 +13,14 @@ defmodule Linguex.Assistant do
 
   defp process(output) do
     output
-    |> Enum.map(fn {_, x} -> x end)
-    |> Enum.reduce(fn x, acc -> acc <> x end)
+    |> Enum.map(fn {creator, data} ->
+      case creator do
+        :prompt -> "User: #{data}"
+        :completion_receiver -> "Assistant: "
+        _ -> data
+      end
+    end)
+    |> Enum.reduce(fn x, acc -> acc <> "\n" <> x end)
   end
 
   def render(output, content) do
@@ -28,6 +34,6 @@ defmodule Linguex.Assistant do
         end
       end)
 
-    final_prompt ++ [{:prompt, content}]
+    final_prompt ++ [{:prompt, content}, {:completion_receiver, nil}]
   end
 end
