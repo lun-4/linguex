@@ -13,6 +13,6 @@ defmodule Linguex.LLM do
       })
       |> IO.inspect()
 
-    env.body
+    env.body["results"] |> Enum.at(0) |> then(fn entity -> entity["text"] end)
   end
 end

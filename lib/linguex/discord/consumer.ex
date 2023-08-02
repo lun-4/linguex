@@ -50,7 +50,7 @@ defmodule Linguex.Discord.Consumer do
 
     # TODO strip mentions from message
     reply = Linguex.DefaultPipeline.submit(input_prompt)
-    Api.create_message!(msg.channel_id, "#{inspect(reply)}")
+    Api.create_message!(msg.channel_id, "#{reply}")
   end
 
   defp handle_non_assistant(msg) do
