@@ -16,7 +16,17 @@ defmodule Linguex.Discord.Cogs.Ping do
     {:ok, ping_msg} = Nostrum.Api.create_message(msg.channel_id, "pong!")
     end_time = System.monotonic_time(:millisecond)
 
-    latency_ms = end_time - start_time
-    {:ok, _} = Nostrum.Api.edit_message(ping_msg, "pong! `#{latency_ms}ms`")
+    send_latency_ms = end_time - start_time
+
+    start_time = System.monotonic_time(:millisecond)
+    {:ok, _} = Nostrum.Api.edit_message(ping_msg, "pong! send: `#{send_latency_ms}ms`")
+    end_time = System.monotonic_time(:millisecond)
+    edit_latency_ms = end_time - start_time
+
+    {:ok, _} =
+      Nostrum.Api.edit_message(
+        ping_msg,
+        "pong! send: `#{send_latency_ms}ms` edit: `#{edit_latency_ms}ms`"
+      )
   end
 end

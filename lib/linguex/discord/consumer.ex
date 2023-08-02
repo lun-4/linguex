@@ -74,6 +74,7 @@ defmodule Linguex.Discord.Consumer do
   def handle_event({:READY, msg, _ws_state}) do
     Logger.info("ready!")
     CommandStorage.add_command(["ping"], Linguex.Discord.Cogs.Ping)
+    CommandStorage.add_command(["eval"], Linguex.Discord.Cogs.Eval)
     Logger.info("#{inspect(msg)}")
     ReadyState.set(msg)
     :ok
