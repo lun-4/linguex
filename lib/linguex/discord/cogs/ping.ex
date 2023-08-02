@@ -12,6 +12,11 @@ defmodule Linguex.Discord.Cogs.Ping do
   def predicates, do: []
 
   def command(msg, _args) do
-    {:ok, _msg} = Nostrum.Api.create_message(msg.channel_id, "pong!")
+    start_time = System.monotonic_time(:millisecond)
+    {:ok, ping_msg} = Nostrum.Api.create_message(msg.channel_id, "pong!")
+    end_time = System.monotonic_time(:millisecond)
+
+    latency_ms = end_time - start_time
+    {:ok, _} = Nostrum.Api.edit_message(ping_msg, "pong! `#{latency_ms}ms`")
   end
 end
