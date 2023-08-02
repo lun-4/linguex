@@ -41,8 +41,15 @@ defmodule Linguex.Discord.Consumer do
       |> String.replace("<@!#{self_id}>", "")
 
     # TODO strip mentions from message
-    reply = Linguex.DefaultPipeline.submit(input_prompt)
-    Api.create_message!(msg.channel_id, "#{inspect(reply)}")
+    try do
+      reply = Linguex.DefaultPipeline.submit(input_prompt)
+      Api.create_message!(msg.channel_id, "#{inspect(reply)}")
+    rescue
+      e ->
+        Logger.error(Exception.format(:error, e, __STACKTRACE__))
+        Api.create_message!(msg.channel_id, "error happened: #{inspect(e)}")
+        reraise e, __STACKTRACE__
+    end
   end
 
   defp handle_non_assistant(msg) do
