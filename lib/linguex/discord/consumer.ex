@@ -46,6 +46,7 @@ defmodule Linguex.Discord.Consumer do
       msg.content
       |> String.replace("<@#{self_id}>", "")
       |> String.replace("<@!#{self_id}>", "")
+      |> String.strip()
 
     # TODO strip mentions from message
     reply = Linguex.DefaultPipeline.submit(input_prompt)
