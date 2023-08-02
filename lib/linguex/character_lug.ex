@@ -1,31 +1,56 @@
 defmodule Linguex.Lug.Character do
   def describe do
-    {:ok, %{}}
+    {:ok,
+     %{
+       kind: :primary
+     }}
   end
 
   defmodule Result do
     defstruct [:name, :pronouns, :personality, :physiology, :extra]
   end
 
-  def call(results, opts) do
-    results ++
-      [
-        %Result{
-          name: Keyword.get(opts, :name),
-          pronouns: Keyword.get(opts, :pronouns),
-          personality: Keyword.get(opts, :personality),
-          physiology: Keyword.get(opts, :physiology),
-          extra: Keyword.get(opts, :extra)
-        }
-      ]
+  def call(output, opts) do
+    output
+    |> Map.put(
+      :results,
+      Map.get(output, :results) ++
+        [
+          %Result{
+            name: Keyword.get(opts, :name),
+            pronouns: Keyword.get(opts, :pronouns),
+            personality: Keyword.get(opts, :personality),
+            physiology: Keyword.get(opts, :physiology),
+            extra: Keyword.get(opts, :extra)
+          }
+        ]
+    )
   end
 
   @default_pronouns %{
+    :he_him => %{
+      shorthand: "he/him",
+      they: "he",
+      they_are: "he is",
+      they_re: "he's",
+      them: "him",
+      theirs: "his"
+    },
+    :she_her => %{
+      shorthand: "she/her",
+      they: "she",
+      they_are: "she is",
+      they_re: "she's",
+      them: "her",
+      theirs: "hers"
+    },
     :it_its => %{
       shorthand: "it/its",
       they: "it",
       they_are: "it is",
-      they_re: "it's"
+      they_re: "it's",
+      them: "it",
+      theirs: "its"
     }
   }
 

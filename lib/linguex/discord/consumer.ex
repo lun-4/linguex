@@ -14,7 +14,7 @@ defmodule Linguex.Discord.Consumer do
     unless msg.author.id == self_id do
       # if the message starts with an user id mention, then it's time to talk to the  llm
       if for_assistant(msg, self_id) do
-        handle_assistant(msg)
+        handle_assistant(msg, self_id)
       else
         handle_non_assistant(msg)
       end
@@ -22,6 +22,7 @@ defmodule Linguex.Discord.Consumer do
   end
 
   defp for_assistant(msg, self_id) do
+    # TODO add message cache for reply detection / thread construction
     unless msg.mentions
            |> Enum.filter(fn user -> user.id == self_id end)
            |> Enum.count() ==
@@ -33,9 +34,15 @@ defmodule Linguex.Discord.Consumer do
     end
   end
 
-  defp handle_assistant(msg) do
-    reply = Linguex.DefaultPipeline.submit(msg.content)
-    Api.create_message!(msg.channel_id, reply)
+  defp handle_assistant(msg, self_id) do
+    input_prompt =
+      msg.content
+      |> String.replace("<@#{self_id}>", "")
+      |> String.replace("<@!#{self_id}>", "")
+
+    # TODO strip mentions from message
+    reply = Linguex.DefaultPipeline.submit(input_prompt)
+    Api.create_message!(msg.channel_id, "#{inspect(reply)}")
   end
 
   defp handle_non_assistant(msg) do

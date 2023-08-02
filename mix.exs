@@ -16,6 +16,7 @@ defmodule Linguex.MixProject do
   def application do
     [
       extra_applications: [:logger],
+      applications: [:nostrum, :nosedrum, :tesla],
       mod: {Linguex.Application, []}
     ]
   end
@@ -24,7 +25,12 @@ defmodule Linguex.MixProject do
   defp deps do
     [
       {:nostrum, "~> 0.8"},
-      {:nosedrum, "~> 0.6"}
+      {:nosedrum, "~> 0.6"},
+      # pinning is required until https://github.com/elixir-tesla/tesla/pull/587 is merged
+      {:gun, "~> 2.0", override: true},
+      {:tesla, "~> 1.7"},
+      {:hackney, "~> 1.17"},
+      {:jason, ">= 1.0.0"}
     ]
   end
 
