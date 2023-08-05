@@ -13,12 +13,18 @@ defmodule Linguex.Assistant do
   end
 
   defp process(output) do
+    character_result =
+      output
+      |> Enum.filter(fn {creator, _, _} -> creator == Linguex.Lug.Character end)
+      |> Enum.map(fn {_, res, _} -> res end)
+      |> Enum.at(0)
+
     output
-    |> Enum.map(fn {creator, data} ->
+    |> Enum.map(fn {creator, _, data} ->
       case creator do
         :prompt -> "User: #{data}"
         :line -> "#{data}"
-        :completion_receiver -> "Assistant: "
+        :completion_receiver -> "#{character_result.name}: "
         _ -> data
       end
     end)
@@ -32,11 +38,11 @@ defmodule Linguex.Assistant do
       |> Enum.map(fn result ->
         case result do
           %Linguex.Lug.Character.Result{} ->
-            {Linguex.Lug.Character, Linguex.Lug.Character.render(result)}
+            {Linguex.Lug.Character, result, Linguex.Lug.Character.render(result)}
         end
       end)
 
-    final_prompt ++ [{:prompt, content}, {:completion_receiver, nil}]
+    final_prompt ++ [{:raw, nil, "User: #{content}"}, {:completion_receiver, nil, nil}]
   end
 
   def render(output, content) when is_list(content) do
@@ -46,16 +52,16 @@ defmodule Linguex.Assistant do
       |> Enum.map(fn result ->
         case result do
           %Linguex.Lug.Character.Result{} ->
-            {Linguex.Lug.Character, Linguex.Lug.Character.render(result)}
+            {Linguex.Lug.Character, result, Linguex.Lug.Character.render(result)}
         end
       end)
 
     rendered_content =
       content
-      |> Enum.map(fn {author, data} -> {:line, "#{author}: #{data}"} end)
+      |> Enum.map(fn {author, data} -> {:line, nil, "#{author}: #{data}"} end)
 
     final_prompt ++
       rendered_content ++
-      [{:completion_receiver, nil}]
+      [{:completion_receiver, nil, nil}]
   end
 end

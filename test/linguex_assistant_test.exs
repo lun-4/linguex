@@ -35,7 +35,7 @@ defmodule LinguexAssistantTest do
 Red is an impostor in the hit game Among Us.
 Red has the shape of an impostor from the hit game Among Us.
 User: Amognus
-Assistant: "
+Red: "
   end
 
   test "renders a conversation with multiple users", %{submit: submit} do
@@ -51,6 +51,6 @@ Red is an impostor in the hit game Among Us.
 Red has the shape of an impostor from the hit game Among Us.
 lun-4: Amongus
 Hatsune Miku: sus
-Assistant: "
+Red: "
   end
 end
