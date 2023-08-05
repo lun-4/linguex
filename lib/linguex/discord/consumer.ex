@@ -41,16 +41,33 @@ defmodule Linguex.Discord.Consumer do
     end
   end
 
-  defp handle_assistant(msg, self_id) do
-    input_prompt =
-      msg.content
-      |> String.replace("<@#{self_id}>", "")
-      |> String.replace("<@!#{self_id}>", "")
-      |> String.strip()
+  defp message_content_filter(content, self_id) do
+    content
+    |> String.replace("<@#{self_id}>", "")
+    |> String.replace("<@!#{self_id}>", "")
+    |> String.strip()
+  end
 
+  defp handle_assistant(msg, self_id) do
     Api.start_typing(msg.channel_id)
-    reply = Linguex.DefaultPipeline.submit(input_prompt)
-    Api.create_message!(msg.channel_id, "#{reply}")
+
+    input_prompt =
+      message_content_filter(msg.content, self_id)
+
+    # messages is ordered newest-to-oldest
+    {:ok, messages} = Api.get_channel_messages(msg.channel_id, 20)
+
+    messages
+    |> Enum.map(fn msg ->
+      {if msg.author.id == self_id do
+         :self
+       else
+         msg.author.username
+       end, message_content_filter(msg.content, self_id)}
+    end)
+    |> Enum.reverse()
+    |> then(&Linguex.DefaultPipeline.submit/1)
+    |> then(&Api.create_message!(msg.channel_id, &1))
   end
 
   defp handle_non_assistant(msg) do
