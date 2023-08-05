@@ -48,7 +48,6 @@ defmodule Linguex.Discord.Consumer do
       |> String.replace("<@!#{self_id}>", "")
       |> String.strip()
 
-    # TODO strip mentions from message
     Api.start_typing(msg.channel_id)
     reply = Linguex.DefaultPipeline.submit(input_prompt)
     Api.create_message!(msg.channel_id, "#{reply}")

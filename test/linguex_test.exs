@@ -9,8 +9,8 @@ defmodule LinguexTest do
   alias Linguex.Lug.Character
 
   test "renders a character" do
-    [result] =
-      Character.call([],
+    %{results: [result]} =
+      Character.call(%{results: []},
         name: "Amongus",
         pronouns: :it_its,
         personality: "{they_are} sus.",
@@ -20,6 +20,6 @@ defmodule LinguexTest do
     assert result.name == "Amongus"
 
     rendered = Character.render(result)
-    assert rendered == "Amongus uses it/its pronouns. it is sus. it is a crewmate."
+    assert rendered == "Amongus uses it/its pronouns.\nit is sus.\nit is a crewmate."
   end
 end

@@ -5,3 +5,5 @@ config :nostrum,
 
 config :nosedrum,
   prefix: "!"
+
+config :tesla, adapter: Tesla.Mock

@@ -8,7 +8,11 @@ defmodule Linguex.LLM.HTTP do
 
   plug(Tesla.Middleware.Timeout, timeout: 15_000)
   plug(Tesla.Middleware.JSON, decode_content_types: ["application/json"])
-  adapter(Tesla.Adapter.Hackney, recv_timeout: 30_000)
+
+  # lol
+  if Mix.env() != :test do
+    adapter(Tesla.Adapter.Hackney, recv_timeout: 30_000)
+  end
 
   def generate!(url, data),
     do: post!(url <> "/api/v1/generate", data)

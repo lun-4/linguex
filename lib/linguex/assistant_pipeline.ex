@@ -1,14 +1,15 @@
 defmodule Linguex.Assistant do
   # use Linguex.Pipeline
 
-  def submit(content) do
-    character_params = Application.fetch_env!(:linguex, Linguex.Assistant)
-
+  def submit(content, params) do
     %{results: []}
-    |> Linguex.Lug.Character.call(character_params)
+    |> Linguex.Lug.Character.call(params)
     |> render(content)
     |> process()
-    |> Linguex.LLM.complete!()
+  end
+
+  def callback(response) do
+    response
   end
 
   defp process(output) do
