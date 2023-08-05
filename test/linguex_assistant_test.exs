@@ -9,11 +9,10 @@ defmodule LinguexAssistantTest do
     pipeline = Linguex.Assistant
 
     params = [
-      name: "Alaymeda",
-      pronouns: :it_its,
-      personality:
-        "{name} is an artificial intelligence assistant. {they_are} helpful and courageous.",
-      physiology: "{name} has white hair and black eyes."
+      name: "Red",
+      pronouns: :he_him,
+      personality: "{name} is an impostor in the hit game Among Us.",
+      physiology: "{name} has the shape of an impostor from the hit game Among Us."
     ]
 
     %{
@@ -31,9 +30,10 @@ defmodule LinguexAssistantTest do
   test "renders a conversation", %{submit: submit} do
     final_prompt = submit.("Amognus")
 
-    assert final_prompt == "Alaymeda uses it/its pronouns.
-Alaymeda is an artificial intelligence assistant. it is helpful and courageous.
-Alaymeda has white hair and black eyes.
+    assert final_prompt ==
+             "Red uses he/him pronouns.
+Red is an impostor in the hit game Among Us.
+Red has the shape of an impostor from the hit game Among Us.
 User: Amognus
 Assistant: "
   end
