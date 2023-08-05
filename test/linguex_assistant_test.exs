@@ -37,4 +37,20 @@ Red has the shape of an impostor from the hit game Among Us.
 User: Amognus
 Assistant: "
   end
+
+  test "renders a conversation with multiple users", %{submit: submit} do
+    final_prompt =
+      submit.([
+        {"lun-4", "Amongus"},
+        {"Hatsune Miku", "sus"}
+      ])
+
+    assert final_prompt ==
+             "Red uses he/him pronouns.
+Red is an impostor in the hit game Among Us.
+Red has the shape of an impostor from the hit game Among Us.
+lun-4: Amongus
+Hatsune Miku: sus
+Assistant: "
+  end
 end
