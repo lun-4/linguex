@@ -8,6 +8,15 @@ defmodule Linguex.Discord.Consumer do
 
   require Logger
 
+  def handle_event({:READY, msg, _ws_state}) do
+    Logger.info("ready!")
+    CommandStorage.add_command(["ping"], Linguex.Discord.Cogs.Ping)
+    CommandStorage.add_command(["eval"], Linguex.Discord.Cogs.Eval)
+    Logger.info("#{inspect(msg)}")
+    ReadyState.set(msg)
+    :ok
+  end
+
   def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
     self_id = ReadyState.user_id()
 
@@ -28,6 +37,10 @@ defmodule Linguex.Discord.Consumer do
     end
   end
 
+  def handle_event(_event) do
+    :noop
+  end
+
   defp for_assistant(msg, self_id) do
     # TODO add message cache for reply detection / thread construction
     unless msg.mentions
@@ -45,14 +58,11 @@ defmodule Linguex.Discord.Consumer do
     content
     |> String.replace("<@#{self_id}>", "")
     |> String.replace("<@!#{self_id}>", "")
-    |> String.strip()
+    |> String.trim()
   end
 
   defp handle_assistant(msg, self_id) do
     Api.start_typing(msg.channel_id)
-
-    input_prompt =
-      message_content_filter(msg.content, self_id)
 
     # messages is ordered newest-to-oldest
     {:ok, messages} = Api.get_channel_messages(msg.channel_id, 20)
@@ -87,18 +97,5 @@ defmodule Linguex.Discord.Consumer do
       _ ->
         :ok
     end
-  end
-
-  def handle_event({:READY, msg, _ws_state}) do
-    Logger.info("ready!")
-    CommandStorage.add_command(["ping"], Linguex.Discord.Cogs.Ping)
-    CommandStorage.add_command(["eval"], Linguex.Discord.Cogs.Eval)
-    Logger.info("#{inspect(msg)}")
-    ReadyState.set(msg)
-    :ok
-  end
-
-  def handle_event(_event) do
-    :noop
   end
 end

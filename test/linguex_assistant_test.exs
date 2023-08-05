@@ -1,10 +1,6 @@
 defmodule LinguexAssistantTest do
   use ExUnit.Case
 
-  import Tesla.Mock
-
-  alias Linguex.Lug.Character
-
   setup do
     pipeline = Linguex.Assistant
 

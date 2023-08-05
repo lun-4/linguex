@@ -41,13 +41,6 @@ defmodule Linguex.Assistant do
     final_prompt ++ [{:raw, nil, "User: #{content}"}, {:completion_receiver, nil, nil}]
   end
 
-  defp character_from_prompt(prompt) do
-    prompt
-    |> Enum.filter(fn {creator, _, _} -> creator == Linguex.Lug.Character end)
-    |> Enum.map(fn {_, res, _} -> res end)
-    |> Enum.at(0)
-  end
-
   def render(output, content) when is_list(content) do
     final_prompt =
       output
@@ -73,5 +66,12 @@ defmodule Linguex.Assistant do
     final_prompt ++
       rendered_content ++
       [{:completion_receiver, nil, nil}]
+  end
+
+  defp character_from_prompt(prompt) do
+    prompt
+    |> Enum.filter(fn {creator, _, _} -> creator == Linguex.Lug.Character end)
+    |> Enum.map(fn {_, res, _} -> res end)
+    |> Enum.at(0)
   end
 end

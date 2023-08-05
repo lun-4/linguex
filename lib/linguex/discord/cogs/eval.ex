@@ -27,8 +27,11 @@ defmodule Linguex.Discord.Cogs.Eval do
   def command(msg, args) do
     args
     |> then(fn string_to_eval ->
-      import IEx.Helpers
-      Code.eval_string(string_to_eval, [msg: msg, recompile: &IEx.Helpers.recompile/0], __ENV__)
+      Code.eval_string(
+        "import IEx.Helpers\n" ++ string_to_eval,
+        [msg: msg, recompile: &IEx.Helpers.recompile/0],
+        __ENV__
+      )
     end)
     |> then(fn {result, _} ->
       {:ok, _} = Nostrum.Api.create_message(msg.channel_id, "`#{inspect(result)}`")
