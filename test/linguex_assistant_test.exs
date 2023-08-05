@@ -42,6 +42,7 @@ Red: "
     final_prompt =
       submit.([
         {"lun-4", "Amongus"},
+        {:self, "awoo"},
         {"Hatsune Miku", "sus"}
       ])
 
@@ -50,6 +51,7 @@ Red: "
 Red is an impostor in the hit game Among Us.
 Red has the shape of an impostor from the hit game Among Us.
 lun-4: Amongus
+Red: awoo
 Hatsune Miku: sus
 Red: "
   end
