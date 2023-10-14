@@ -1,4 +1,5 @@
 %{
+  "abacus": {:hex, :abacus, "0.4.2", "632837177bd534e55a520d373b7195bc9bfcbc9425fefb5e93e3cf3336ba9737", [:mix], [], "hexpm", "2e7bd7c0ba2a594808d42c1b946f11c47bf8254506403031958b58054c807986"},
   "certifi": {:hex, :certifi, "2.11.0", "5adfe37ceb8569d019f836944aeaf27f8ac391dacaf3707f570c155b7e03aaa8", [:rebar3], [], "hexpm", "9e37e0542ec3fabaa19a0734b3900dc095797fac48c40a2a9741d8ad5e3c9bb7"},
   "chacha20": {:hex, :chacha20, "1.0.4", "0359d8f9a32269271044c1b471d5cf69660c362a7c61a98f73a05ef0b5d9eb9e", [:mix], [], "hexpm", "2027f5d321ae9903f1f0da7f51b0635ad6b8819bc7fe397837930a2011bc2349"},
   "cowlib": {:hex, :cowlib, "2.12.1", "a9fa9a625f1d2025fe6b462cb865881329b5caff8f1854d1cbc9f9533f00e1e1", [:make, :rebar3], [], "hexpm", "163b73f6367a7341b33c794c4e88e7dbfe6498ac42dcd69ef44c5bc5507c8db0"},

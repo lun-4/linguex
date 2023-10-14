@@ -6,8 +6,9 @@ defmodule Linguex.LLM.HTTP do
   # plug(Tesla.Middleware.Headers, [
   # ])
 
-  plug(Tesla.Middleware.Timeout, timeout: 15_000)
+  plug(Tesla.Middleware.Timeout, timeout: 30_000)
   plug(Tesla.Middleware.JSON, decode_content_types: ["application/json"])
+  adapter(Tesla.Adapter.Hackney, recv_timeout: 30_000)
 
   # lol
   if Mix.env() != :test do

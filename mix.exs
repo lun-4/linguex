@@ -16,7 +16,7 @@ defmodule Linguex.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      applications: [:nostrum, :nosedrum, :tesla],
+      applications: [:nostrum, :nosedrum, :tesla, :abacus],
       mod: {Linguex.Application, []}
     ]
   end
@@ -31,7 +31,8 @@ defmodule Linguex.MixProject do
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.17"},
       {:jason, ">= 1.0.0"},
-      {:recon, "~> 2.5"}
+      {:recon, "~> 2.5"},
+      {:abacus, "~> 0.4.2"}
     ]
   end
 

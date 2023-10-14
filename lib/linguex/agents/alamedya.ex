@@ -7,7 +7,7 @@ defmodule Linguex.Agents.Alamedya do
   end
 
   def single_discord_message(agent, msg) do
-    GenServer.call(agent, {:single_discord_message_react, msg})
+    GenServer.call(agent, {:single_discord_message_react, msg}, 30000)
   end
 
   def wipe_history(agent, key) do
@@ -40,38 +40,29 @@ defmodule Linguex.Agents.Alamedya do
          Linguex.Lug.Character.call(
            @alamedya_character
            |> Keyword.put(:first_instruction, "You are {{name}}")
-           |> Keyword.put(:extra, "You run in a loop of Thought, Action, PAUSE, Observation.
-At the end of the loop you output an Answer
-Use Thought to describe your thoughts about the question you have been asked.
-Use Action to run one of the actions available to you - then return PAUSE.
-Observation will be the result of running those actions.
+           |> Keyword.put(
+             :extra,
+             "Answer the following questions as best you can. You have access to the following tools:
 
-Your available actions are:
+wikipedia: a search engine for wikipedia articles. useful for when you need to answer questions about current events. input should be a search query.
+calculator: useful for getting the result of a math expression. The input to this tool should be a valid mathematical expression that could be executed by a simple calculator.
 
-calculate:
-e.g. calculate: 4 * 7 / 3
-Runs a calculation and returns the number - uses Python so be sure to use floating point syntax if necessary
+Use the following format:
 
-wikipedia:
-e.g. wikipedia: Django
-Returns a summary from searching Wikipedia
+Thought: you should always think about what to do
+Action: the action to take, should be one of [wikipedia, calculator]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
 
-Always look things up on Wikipedia if you have the opportunity to do so.
+Example:
 
-Example session:
-
-Question: What is the capital of France?
-Thought: I should look up France on Wikipedia
-Action: wikipedia: France
-PAUSE
-
-You will be called again with this:
-
-Observation: France is a country. The capital is Paris.
-
-You then output:
-
-Answer: The capital of France is Paris")
+Action: wikipedia
+Action Input: ActivityPub
+"
+           )
          )
          |> Linguex.Lug.Character.render(),
        histories: %{}
@@ -151,7 +142,8 @@ Answer: The capital of France is Paris")
      )}
   end
 
-  @action_regex ~r/^Action: (\w+): (.*)$/m
+  @action_regex ~r/^Action: (.+)$/m
+  @action_input_regex ~r/^Action Input: (.*)$/m
 
   defp run_react(history, state, react_state \\ %{retries: 0}) do
     if react_state.retries > 10 do
@@ -161,8 +153,10 @@ Answer: The capital of France is Paris")
     reply =
       history
       |> to_llm_input(state.react_system_prompt)
-      |> Linguex.LLM.complete!()
+      |> Linguex.LLM.complete!(stopping_strings: ["Observation:"])
       |> String.trim()
+
+    Logger.debug("reply: #{inspect(reply)}")
 
     actions =
       @action_regex
@@ -170,26 +164,56 @@ Answer: The capital of France is Paris")
       |> then(fn
         [] ->
           reply
-          |> String.trim("Answer: ")
+          |> String.trim("Final Answer: ")
 
         [action | _] ->
-          [_, action_name, action_argument] = action
-          observation = do_action(action_name, action_argument)
+          [_, action_name] = action
+
+          action_input =
+            @action_input_regex
+            |> Regex.scan(reply)
+            |> Enum.at(0)
+            |> then(fn [_, value] -> value end)
+
+          observation = do_action(action_name |> String.downcase(), action_input)
 
           run_react(
-            ["Observation: #{observation}" | history],
+            [
+              "Action: #{action_name}\nAction Input: #{action_input}\nObservation: #{observation}"
+              | history
+            ],
+            state,
             react_state
             |> Map.put(:retries, react_state.retries + 1)
           )
       end)
   end
 
-  defp do_action("wikipedia", data) do
-    raise "wikipedia #{data}"
+  defp do_action("wikipedia", query) do
+    Logger.info("query wikipedia #{inspect(query)}")
+
+    Tesla.get!("https://en.wikipedia.org/w/api.php",
+      query: [
+        action: "query",
+        list: "search",
+        srsearch: query,
+        format: "json"
+      ]
+    )
+    |> then(fn env -> Jason.decode!(env.body) end)
+    |> then(fn data ->
+      data["query"]["search"]
+      |> Enum.at(0)
+      |> then(fn d -> d["snippet"] end)
+      # cursed
+      |> String.replace("<span class=\"searchmatch\">", "")
+      |> String.replace("</span>", "")
+    end)
   end
 
-  defp do_action("calculate", data) do
-    raise "calculate #{data}"
+  defp do_action("calculator", data) do
+    {:ok, result} = Abacus.eval(data)
+    "#{result}"
   end
 
   @impl true
