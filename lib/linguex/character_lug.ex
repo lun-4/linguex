@@ -7,11 +7,12 @@ defmodule Linguex.Lug.Character do
   end
 
   defmodule Result do
-    defstruct [:name, :pronouns, :personality, :physiology, :extra]
+    defstruct [:name, :pronouns, :personality, :physiology, :extra, :first_instruction]
   end
 
   def call(opts) do
     %Result{
+      first_instruction: Keyword.get(opts, :first_instruction),
       name: Keyword.get(opts, :name),
       pronouns: Keyword.get(opts, :pronouns),
       personality: Keyword.get(opts, :personality),
@@ -81,11 +82,12 @@ defmodule Linguex.Lug.Character do
 
   def render(result) do
     with personality <- render_any_text(result, result.personality),
+         first_instruction <- render_any_text(result, result.first_instruction),
          physiology <- render_any_text(result, result.physiology),
          extra <- render_any_text(result, result.extra) do
       character = render_any_text(result, "{name} uses {pronoun_shorthand} pronouns.")
 
-      "#{character}#{_maybe(personality)}#{_maybe(physiology)}#{_maybe(extra)}"
+      "#{_maybe(first_instruction)}#{_maybe(character)}#{_maybe(personality)}#{_maybe(physiology)}#{_maybe(extra)}"
     end
   end
 end

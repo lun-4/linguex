@@ -15,7 +15,7 @@ defmodule Linguex.LLM.HTTP do
   end
 
   def generate!(url, data),
-    do: post!(url <> "/api/v1/generate", data)
+    do: post!(url <> "/api/v1/generate", data, opts: [adapter: [recv_timeout: 30000]])
 
   def info!(url),
     do: post!(url <> "/api/v1/model", %{action: "info"})
