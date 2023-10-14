@@ -10,21 +10,14 @@ defmodule Linguex.Lug.Character do
     defstruct [:name, :pronouns, :personality, :physiology, :extra]
   end
 
-  def call(output, opts) do
-    output
-    |> Map.put(
-      :results,
-      Map.get(output, :results) ++
-        [
-          %Result{
-            name: Keyword.get(opts, :name),
-            pronouns: Keyword.get(opts, :pronouns),
-            personality: Keyword.get(opts, :personality),
-            physiology: Keyword.get(opts, :physiology),
-            extra: Keyword.get(opts, :extra)
-          }
-        ]
-    )
+  def call(opts) do
+    %Result{
+      name: Keyword.get(opts, :name),
+      pronouns: Keyword.get(opts, :pronouns),
+      personality: Keyword.get(opts, :personality),
+      physiology: Keyword.get(opts, :physiology),
+      extra: Keyword.get(opts, :extra)
+    }
   end
 
   @default_pronouns %{

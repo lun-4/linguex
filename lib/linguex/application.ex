@@ -10,8 +10,8 @@ defmodule Linguex.Application do
     children = [
       Nosedrum.TextCommand.Storage.ETS,
       Linguex.Discord.ReadyState,
-
-      Linguex.Discord.Consumer
+      Linguex.Discord.Consumer,
+      {Linguex.Agents.Alamedya, name: Linguex.Agents.Alamedya}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

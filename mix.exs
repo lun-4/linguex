@@ -30,7 +30,8 @@ defmodule Linguex.MixProject do
       {:gun, "~> 2.0", override: true},
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.17"},
-      {:jason, ">= 1.0.0"}
+      {:jason, ">= 1.0.0"},
+      {:recon, "~> 2.5"}
     ]
   end
 

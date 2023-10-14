@@ -12,7 +12,7 @@ defmodule Linguex.Discord.Consumer do
     Logger.info("ready!")
     CommandStorage.add_command(["ping"], Linguex.Discord.Cogs.Ping)
     CommandStorage.add_command(["eval"], Linguex.Discord.Cogs.Eval)
-    Logger.info("#{inspect(msg)}")
+    CommandStorage.add_command(["llm.reset"], Linguex.Discord.Cogs.LLM.Reset)
     ReadyState.set(msg)
     :ok
   end
@@ -64,19 +64,9 @@ defmodule Linguex.Discord.Consumer do
   defp handle_assistant(msg, self_id) do
     Api.start_typing(msg.channel_id)
 
-    # messages is ordered newest-to-oldest
-    {:ok, messages} = Api.get_channel_messages(msg.channel_id, 20)
-
-    messages
-    |> Enum.map(fn msg ->
-      {if msg.author.id == self_id do
-         :self
-       else
-         msg.author.username
-       end, message_content_filter(msg.content, self_id)}
-    end)
-    |> Enum.reverse()
-    |> then(&Linguex.DefaultPipeline.submit/1)
+    msg
+    |> Map.put(:content, msg.content |> message_content_filter(self_id))
+    |> then(&Linguex.Agents.Alamedya.single_discord_message(Linguex.Agents.Alamedya, &1))
     |> then(&Api.create_message!(msg.channel_id, &1))
   end
 
