@@ -94,11 +94,11 @@ Action Input: ActivityPub
 
   @impl true
   def handle_call({:single_discord_message, msg}, _from, state) do
-    entry = {msg.author.username, msg.content}
+    entry = {msg["author"], msg["content"]}
 
     history =
       state.histories
-      |> Map.get(msg.channel_id, [])
+      |> Map.get(msg["channel_id"], [])
       |> then(fn history ->
         [entry | history]
       end)
@@ -116,17 +116,17 @@ Action Input: ActivityPub
      |> Map.put(
        :histories,
        state.histories
-       |> Map.put(msg.channel_id, [{:self, reply} | history])
+       |> Map.put(msg["channel_id"], [{:self, reply} | history])
      )}
   end
 
   @impl true
   def handle_call({:single_discord_message_react, msg}, _from, state) do
-    entry = {msg.author.username, msg.content}
+    entry = {msg["author"], msg["content"]}
 
     history =
       state.histories
-      |> Map.get(msg.channel_id, [])
+      |> Map.get(msg["channel_id"], [])
       |> then(fn history ->
         [entry | history]
       end)
@@ -138,7 +138,7 @@ Action Input: ActivityPub
      |> Map.put(
        :histories,
        state.histories
-       |> Map.put(msg.channel_id, [{:self, reply} | history])
+       |> Map.put(msg["channel_id"], [{:self, reply} | history])
      )}
   end
 

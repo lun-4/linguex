@@ -8,10 +8,12 @@ defmodule LinguexWeb.AgentController do
     |> json(%{agents: ["alamedya"]})
   end
 
-  def input(conn, _params) do
-    IO.puts("udigue")
+  def input(conn, %{"input_data" => input_data}) do
+    reply =
+      input_data
+      |> then(&Linguex.Agents.Alamedya.single_discord_message(Linguex.Agents.Alamedya, &1))
 
     conn
-    |> json(%{reply: "alksfjlsakdhg"})
+    |> json(%{reply: reply})
   end
 end

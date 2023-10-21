@@ -1,0 +1,8 @@
+token: 'alksjfskldjgkladshgklawrhjgkwaerhj'
+command_prefix: '!'
+description: 'llm agent testing'
+hot_reload: true
+intents: all
+logging:
+  level: "INFO"
+

@@ -14,7 +14,7 @@ defmodule LinguexWeb.Router do
   end
 
   scope "/api/v0/agent", LinguexWeb do
-    get("/call", AgentController, :input)
+    post("/call", AgentController, :input)
     get("/list", AgentController, :list)
   end
 end
