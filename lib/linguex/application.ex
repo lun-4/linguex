@@ -8,10 +8,11 @@ defmodule Linguex.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Nosedrum.TextCommand.Storage.ETS,
-      Linguex.Discord.ReadyState,
-      Linguex.Discord.Consumer,
-      {Linguex.Agents.Alamedya, name: Linguex.Agents.Alamedya}
+      # Nosedrum.TextCommand.Storage.ETS,
+      # Linguex.Discord.ReadyState,
+      # Linguex.Discord.Consumer,
+      {Linguex.Agents.Alamedya, name: Linguex.Agents.Alamedya},
+      LinguexWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

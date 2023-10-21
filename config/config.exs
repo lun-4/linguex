@@ -6,6 +6,14 @@ config :nostrum,
 config :nosedrum,
   prefix: "!"
 
+config :linguex, LinguexWeb.Endpoint,
+  url: [host: "localhost"],
+  render_errors: [
+    formats: [json: LinguexWeb.ErrorJSON],
+    layout: false
+  ],
+  live_view: [signing_salt: "7p7hMPr9"]
+
 config :linguex, Linguex.Defaults, pipeline: Linguex.Assistant
 
 config :linguex, Linguex.Assistant,
@@ -16,5 +24,11 @@ config :linguex, Linguex.Assistant,
   physiology: "{name} has white hair and black eyes."
 
 config :tesla, adapter: Tesla.Adapter.Hackney
+
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
+
+config :phoenix, :json_library, Jason
 
 import_config "#{Mix.env()}.exs"

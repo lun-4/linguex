@@ -1,5 +1,5 @@
 defmodule Linguex.Discord.Consumer do
-  use Nostrum.Consumer
+  # use Nostrum.Consumer
 
   alias Nostrum.Api
   alias Nosedrum.TextCommand.Storage.ETS, as: CommandStorage
