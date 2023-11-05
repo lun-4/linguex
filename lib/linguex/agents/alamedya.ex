@@ -7,11 +7,16 @@ defmodule Linguex.Agents.Alamedya do
   end
 
   def single_discord_message(agent, msg) do
-    GenServer.call(agent, {:single_discord_message_react, msg}, 30000)
+    GenServer.call(agent, {:single_discord_message, msg}, 30000)
   end
 
   def wipe_history(agent, key) do
     GenServer.call(agent, {:wipe_history, key})
+  end
+
+  def simple_client_worker(agent, input, reply_to) do
+    reply = single_discord_message(agent, input)
+    send(reply_to, reply)
   end
 
   defmodule State do
