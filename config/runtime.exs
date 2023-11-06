@@ -8,3 +8,7 @@ if config_env() == :prod or config_env() == :dev do
   config :nostrum,
     token: discord_token
 end
+
+if config_env() == :prod do
+  config :linguex, Linguex.Repo, database: "./linguex.db"
+end

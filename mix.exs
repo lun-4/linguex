@@ -34,6 +34,9 @@ defmodule Linguex.MixProject do
       {:phoenix, "~> 1.7.6"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
+      {:ecto_sql, "~> 3.10"},
+      {:ecto_sqlite3, ">= 0.0.0"},
+      {:sqlite_vss, ">= 0.0.0"},
 
       # {:nostrum, git: "https://github.com/Kraigie/nostrum.git", branch: "master", override: true},
       # use master branch until https://github.com/Kraigie/nostrum/pull/522 is
@@ -52,7 +55,15 @@ defmodule Linguex.MixProject do
 
   defp aliases do
     [
-      test: "test --no-start"
+      setup: ["deps.get", "ecto.setup"],
+      "ecto.setup": [
+        "sqlite_vss.install",
+        "ecto.create",
+        "ecto.migrate",
+        "run priv/repo/seeds.exs"
+      ],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 end

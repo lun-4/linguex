@@ -28,3 +28,6 @@ linguex-*.tar
 .envrc
 
 config/*.secret.exs
+
+*.db
+*.sh
