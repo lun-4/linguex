@@ -29,5 +29,5 @@ linguex-*.tar
 
 config/*.secret.exs
 
-*.db
+*.db*
 *.sh

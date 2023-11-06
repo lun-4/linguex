@@ -11,6 +11,7 @@ defmodule Linguex.Application do
       # Nosedrum.TextCommand.Storage.ETS,
       # Linguex.Discord.ReadyState,
       # Linguex.Discord.Consumer,
+      Linguex.Repo,
       {Linguex.Agents.Alamedya, name: Linguex.Agents.Alamedya},
       LinguexWeb.Endpoint
     ]

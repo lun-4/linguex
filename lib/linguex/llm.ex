@@ -17,4 +17,13 @@ defmodule Linguex.LLM do
 
     env.body["results"] |> Enum.at(0) |> then(fn entity -> entity["text"] end)
   end
+
+  def embed!(input_string, opts \\ []) do
+    env =
+      HTTP.embeddings!("http://100.101.194.71:5001", %{
+        input: input_string
+      })
+
+    env.body["data"] |> Enum.at(0) |> then(fn entity -> entity["embedding"] end)
+  end
 end
