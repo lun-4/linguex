@@ -1,2 +1,5 @@
+Application.ensure_all_started(:mox)
+Mox.defmock(Linguex.LLMBehaviourMock, for: Linguex.LLMBehaviour)
+Application.put_env(:bound, :llm, Linguex.LLMBehaviourMock)
 ExUnit.start()
 Ecto.Adapters.SQL.Sandbox.mode(Linguex.Repo, :manual)

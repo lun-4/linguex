@@ -27,6 +27,7 @@ defmodule Linguex.MemoryStream do
         %__MODULE__{agent: agent, id: id, data: data}
         |> repo.insert!()
 
+      # refrech so we have rowid filled
       memory =
         from(m in __MODULE__,
           select: m,
@@ -37,7 +38,7 @@ defmodule Linguex.MemoryStream do
         )
         |> repo.one
 
-      embedding = Linguex.LLM.embed!(data) |> Jason.encode!()
+      embedding = Linguex.LLMBound.embed!(data) |> Jason.encode!()
 
       repo.query!(
         """
@@ -61,13 +62,9 @@ defmodule Linguex.MemoryStream do
       """
       select rowid, distance
       from vss_memory_stream
-      where vss_search(
-        data_embedding,
-        $1
-      )
-      limit 100;
+      where vss_search(data_embedding, vss_search_params($1, 100));
       """,
-      [Linguex.LLM.embed!(text) |> Jason.encode!()]
+      [Linguex.LLMBound.embed!(text) |> Jason.encode!()]
     )
   end
 end

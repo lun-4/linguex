@@ -49,7 +49,8 @@ defmodule Linguex.MixProject do
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.17"},
       {:recon, "~> 2.5"},
-      {:abacus, "~> 0.4.2"}
+      {:abacus, "~> 0.4.2"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 

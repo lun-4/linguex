@@ -1,7 +1,10 @@
-defmodule Linguex.LLM do
+defmodule Linguex.LLMImpl do
   alias Linguex.LLM.HTTP
   require Logger
 
+  @behaviour Linguex.LLMBehaviour
+
+  @impl true
   @spec complete!(String.t(), Keyword.t()) :: String.t()
   def complete!(input_string, opts \\ []) do
     Logger.debug("input to llm #{input_string}")
@@ -18,6 +21,7 @@ defmodule Linguex.LLM do
     env.body["results"] |> Enum.at(0) |> then(fn entity -> entity["text"] end)
   end
 
+  @impl true
   def embed!(input_string, opts \\ []) do
     env =
       HTTP.embeddings!("http://100.101.194.71:5001", %{
