@@ -111,7 +111,7 @@ Action Input: ActivityPub
     reply =
       history
       |> to_llm_input(state.system_prompt)
-      |> Linguex.LLM.complete!()
+      |> Linguex.LLMBound.complete!()
       |> String.trim()
       |> String.trim("#{@alamedya_character |> Keyword.get(:name)}: ")
       |> String.trim()
@@ -158,7 +158,7 @@ Action Input: ActivityPub
     reply =
       history
       |> to_llm_input(state.react_system_prompt)
-      |> Linguex.LLM.complete!(stopping_strings: ["Observation:"])
+      |> Linguex.LLMBound.complete!(stopping_strings: ["Observation:"])
       |> String.trim()
 
     Logger.debug("reply: #{inspect(reply)}")
