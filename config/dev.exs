@@ -20,8 +20,6 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :linguex, Linguex.Repo,
-  database: Path.expand("../linguex_dev.db", Path.dirname(__ENV__.file)),
-  pool_size: 1,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
 

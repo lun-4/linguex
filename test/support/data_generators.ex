@@ -5,7 +5,11 @@ defmodule Linguex.Test.DataGenerator do
     do:
       embedding
       |> Enum.map(fn value ->
-        offset = [0.05, -0.05] |> Enum.random()
+        # more realistic embedding changes
+        magnitude_offset = 1..2 |> Enum.random() |> then(fn x -> :math.pow(10, -x) end)
+        value_offset = 1..3 |> Enum.random()
+        sign_offset = [-1, 1] |> Enum.random()
+        offset = sign_offset * magnitude_offset * value_offset
         value + offset
       end)
 end

@@ -18,10 +18,12 @@ defmodule LinguexWeb.MemoryStreamTest do
       end
     end)
 
-    {:ok, {memory, vector}} = Linguex.MemoryStream.insert!("agent", 0, "robot")
-    {:ok, {memory, vector}} = Linguex.MemoryStream.insert!("agent", 1, "human")
-    {:ok, {memory, vector}} = Linguex.MemoryStream.insert!("agent", 2, "robot girl")
+    robot_memory = Linguex.MemoryStream.insert!("agent", 0, "robot")
+    human_memory = Linguex.MemoryStream.insert!("agent", 1, "human")
 
     data = Linguex.MemoryStream.alike("agent", "robot girl")
+    possibly_robot_memory = data |> Enum.at(0)
+    assert possibly_robot_memory.agent == robot_memory.agent
+    assert possibly_robot_memory.id == robot_memory.id
   end
 end

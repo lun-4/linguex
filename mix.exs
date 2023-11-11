@@ -35,8 +35,8 @@ defmodule Linguex.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:ecto_sql, "~> 3.10"},
-      {:ecto_sqlite3, ">= 0.0.0"},
-      {:sqlite_vss, ">= 0.0.0"},
+      {:postgrex, "~> 0.17.3"},
+      {:pgvector, "~> 0.2.0"},
 
       # {:nostrum, git: "https://github.com/Kraigie/nostrum.git", branch: "master", override: true},
       # use master branch until https://github.com/Kraigie/nostrum/pull/522 is

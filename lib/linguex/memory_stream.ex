@@ -1,70 +1,34 @@
 defmodule Linguex.MemoryStream do
   use Ecto.Schema
   import Ecto.Query
+  import Pgvector.Ecto.Query
   alias Linguex.Repo
 
   @primary_key false
 
   schema "memory_stream" do
-    field(:rowid, :integer)
     field(:agent, :string)
     field(:id, :integer)
     field(:data, :string)
-  end
-
-  defmodule Vectors do
-    use Ecto.Schema
-    @primary_key false
-    schema "vss_memory_stream" do
-      field(:rowid, :integer)
-      field(:data_embedding, :string)
-    end
+    field(:embedding, Pgvector.Ecto.Vector)
   end
 
   def insert!(agent, id, data) do
-    Repo.transaction(fn repo ->
-      memory =
-        %__MODULE__{agent: agent, id: id, data: data}
-        |> repo.insert!()
+    embedding = Linguex.LLMBound.embed!(data)
 
-      # refrech so we have rowid filled
-      memory =
-        from(m in __MODULE__,
-          select: m,
-          where:
-            m.agent == ^agent and
-              m.id ==
-                ^id
-        )
-        |> repo.one
-
-      embedding = Linguex.LLMBound.embed!(data) |> Jason.encode!()
-
-      repo.query!(
-        """
-        insert into vss_memory_stream (rowid, data_embedding)
-        values ($1, $2)
-        """,
-        [memory.rowid, embedding]
-      )
-
-      memory_vector = %__MODULE__.Vectors{
-        rowid: memory.rowid,
-        data_embedding: embedding
-      }
-
-      {memory, memory_vector}
-    end)
+    %__MODULE__{agent: agent, id: id, data: data, embedding: embedding}
+    |> Repo.insert!()
   end
 
   def alike(agent, text) do
-    Repo.query!(
-      """
-      select rowid, distance
-      from vss_memory_stream
-      where vss_search(data_embedding, vss_search_params($1, 100));
-      """,
-      [Linguex.LLMBound.embed!(text) |> Jason.encode!()]
+    target_embedding = Linguex.LLMBound.embed!(text)
+
+    Repo.all(
+      from(m in __MODULE__,
+        where: m.agent == ^agent,
+        order_by: l2_distance(m.embedding, ^target_embedding),
+        limit: 5
+      )
     )
   end
 end
