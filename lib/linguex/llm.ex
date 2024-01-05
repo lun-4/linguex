@@ -15,14 +15,14 @@ defmodule Linguex.LLMImpl do
     Logger.debug("opts: #{inspect(opts)}")
 
     env =
-      HTTP.generate!("#{config()[:url]}", %{
+      HTTP.complete!("#{config()[:url]}", %{
         prompt: input_string,
-        max_new_tokens: opts |> Keyword.get(:max_new_tokens, 256),
-        stopping_strings: opts |> Keyword.get(:stopping_strings, [])
+        max_tokens: opts |> Keyword.get(:max_new_tokens, 256),
+        stop: opts |> Keyword.get(:stopping_strings, [])
       })
       |> dbg
 
-    env.body["results"] |> Enum.at(0) |> then(fn entity -> entity["text"] end)
+    env.body["choices"] |> Enum.at(0) |> then(fn entity -> entity["text"] end)
   end
 
   @impl true
