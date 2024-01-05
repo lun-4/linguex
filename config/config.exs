@@ -3,12 +3,6 @@ import Config
 config :linguex,
   ecto_repos: [Linguex.Repo]
 
-config :nostrum,
-  gateway_intents: :all
-
-config :nosedrum,
-  prefix: "!"
-
 config :linguex, LinguexWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [
