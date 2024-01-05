@@ -4,6 +4,10 @@ defmodule Linguex.LLMImpl do
 
   @behaviour Linguex.LLMBehaviour
 
+  defp config do
+    Application.fetch_env!(:linguex, Linguex.LLM)
+  end
+
   @impl true
   @spec complete!(String.t(), Keyword.t()) :: String.t()
   def complete!(input_string, opts \\ []) do
@@ -11,7 +15,7 @@ defmodule Linguex.LLMImpl do
     Logger.debug("opts: #{inspect(opts)}")
 
     env =
-      HTTP.generate!("http://100.101.194.71:5000", %{
+      HTTP.generate!("#{config()[:url]}", %{
         prompt: input_string,
         max_new_tokens: opts |> Keyword.get(:max_new_tokens, 256),
         stopping_strings: opts |> Keyword.get(:stopping_strings, [])
@@ -24,7 +28,7 @@ defmodule Linguex.LLMImpl do
   @impl true
   def embed!(input_string, opts \\ []) do
     env =
-      HTTP.embeddings!("http://100.101.194.71:5001", %{
+      HTTP.embeddings!("#{config()[:url]}", %{
         input: input_string
       })
 

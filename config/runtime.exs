@@ -22,3 +22,5 @@ if config_env() == :prod do
     port: database_port,
     types: Linguex.PostgrexTypes
 end
+
+config :linguex, Linguex.LLM, url: System.get_env("OPENAI_ENDPOINT") || "http://localhost:5001"

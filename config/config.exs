@@ -35,4 +35,6 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
+config :linguex, Linguex.LLM, url: "http://localhost:5001"
+
 import_config "#{Mix.env()}.exs"
