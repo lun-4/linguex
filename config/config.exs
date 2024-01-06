@@ -21,7 +21,7 @@ config :linguex, Linguex.Repo,
 config :linguex, Linguex.Defaults, pipeline: Linguex.Assistant
 
 config :linguex, Linguex.Assistant,
-  name: "Alaymeda",
+  name: "Alamedya",
   pronouns: :it_its,
   personality:
     "{name} is an artificial intelligence assistant. {they_are} helpful and courageous.",

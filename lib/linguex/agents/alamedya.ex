@@ -86,12 +86,31 @@ Action Input: ActivityPub
 "
   end
 
+  defp to_llm_input(history, system_prompt, :chatml) do
+    "<|im_start|>system
+#{system_prompt}<|im_end|>
+#{history |> render_history(:chatml)}
+<|im_start|>Alamedya
+"
+  end
+
   defp render_history(history) do
     history
     |> Enum.reverse()
     |> Enum.map(fn
       {:self, text} -> "Alamedya: #{text}"
       {a, b} -> "#{a}: #{b}"
+      s when is_bitstring(s) -> s
+    end)
+    |> Enum.reduce(fn x, acc -> acc <> "\n" <> x end)
+  end
+
+  defp render_history(history, :chatml) do
+    history
+    |> Enum.reverse()
+    |> Enum.map(fn
+      {:self, text} -> "<|im_start>Alamedya\n#{text}"
+      {a, b} -> "<|im_start>#{a}\n#{b}"
       s when is_bitstring(s) -> s
     end)
     |> Enum.reduce(fn x, acc -> acc <> "\n" <> x end)
@@ -110,7 +129,7 @@ Action Input: ActivityPub
 
     reply =
       history
-      |> to_llm_input(state.system_prompt)
+      |> to_llm_input(state.system_prompt, :chatml)
       |> Linguex.LLMBound.complete!()
       |> String.trim()
       |> String.trim("#{@alamedya_character |> Keyword.get(:name)}: ")
@@ -157,7 +176,7 @@ Action Input: ActivityPub
 
     reply =
       history
-      |> to_llm_input(state.react_system_prompt)
+      |> to_llm_input(state.react_system_prompt, :chatml)
       |> Linguex.LLMBound.complete!(stopping_strings: ["Observation:"])
       |> String.trim()
 
